@@ -13,6 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Discord Notification - Start
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "🐶배포 시작🐶"
+          description: |
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.event.head_commit.message }}
+        color: #f5c518
+
       # 캐시 저장 설정을 위한 action(라이브러리)
       - name: Cache Docker Image Layer
         # actions/cache : 깃허브 캐시 저장소 활용을 위한 라이브러리
@@ -91,4 +102,30 @@ jobs:
             docker compose -f docker-compose.yml down
             docker compose -f docker-compose.yml up -d
             docker system prune -f
-          # 사용하지 않는 컨테이너, 볼륨, 네트워크 등을 삭제제
+          # 사용하지 않는 컨테이너, 볼륨, 네트워크 등을 삭제
+    
+        # Discord 알림 - 배포 성공
+      - name: Discord Notification - Success
+        if: success()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "✅ 배포 성공"
+          description: |
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.event.head_commit.message }}
+          color: 0x00ff00
+
+      # Discord 알림 - 배포 실패
+      - name: Discord Notification - Failure
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "❌ 배포 실패"
+          description: |
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.event.head_commit.message }}
+          color: 0xff0000
