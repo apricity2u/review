@@ -68,8 +68,6 @@ services:
       cache_from:
         - type=local,src=/tmp/docker-cache/client
     image: apricity2u/client:latest
-    environment:
-      - DOMAIN=43.201.1.67.sslip.io
     ports:
       - "80:80"
       - "443:443"
