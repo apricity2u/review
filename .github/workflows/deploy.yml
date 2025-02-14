@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v4.2.0
         with:
           # 캐시로 관리한 경로
-          path: /tmp/.buildx-cache
+          path: /tmp/docker-cache
           # 불러올 캐시의 이름(식별자)
           # github.sha : 캐시의 커밋해쉬
           key: docker-image-layer-cache-${{ github.sha }}
