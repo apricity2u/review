@@ -54,7 +54,7 @@ jobs:
 
       - name: Docker Image Build
         # docker compose의 파일 이름 설정 -f ~
-        run: docker compose -f docker-compose-actions-cache.yml build --build-arg BUILDKIT_INLINE_CACHE=1
+        run: docker compose -f docker-compose.yml build --build-arg BUILDKIT_INLINE_CACHE=1
 
       - name: Docker Image Push
         run: docker compose -f docker-compose.yml push
