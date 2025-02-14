@@ -13,6 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # GitHub Actions Cache 설정
+      - name: Cache Docker layers
+        uses: actions/cache@v4.2.0
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
       - name: Create .env file
         run: |
           echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .env
@@ -26,8 +35,18 @@ jobs:
       - name: Add Remote Server Fingerprint to Known Hosts
         run: ssh-keyscan -H -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts || true
 
+      # Docker Buildx 설정
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Login DockerHub
         run: echo '${{ secrets.DOCKER_PASSWORD}}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
+
+      # BuildKit 빌더 생성
+      - name: Create BuildKit Builder
+        run: |
+          docker buildx create --use --name buildkit
+          docker buildx use buildkit
 
       - name: Docker Image Build
         run: docker compose -f docker-compose.yml build
