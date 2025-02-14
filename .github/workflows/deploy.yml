@@ -22,7 +22,7 @@ jobs:
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
             Commit: ${{ github.event.head_commit.message }}
-        color: f5c518
+        color: ffff00
 
       # 캐시 저장 설정을 위한 action(라이브러리)
       - name: Cache Docker Image Layer
@@ -73,7 +73,7 @@ jobs:
         run: echo '${{ secrets.DOCKER_PASSWORD}}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
 
       - name: Docker Image Build
-        # docker compose의 파일 이름 설정 -f 
+        # docker compose의 파일 이름 설정 -f
         run: docker compose -f docker-compose.yml build --build-arg BUILDKIT_INLINE_CACHE=1
 
       - name: Docker Image Push
@@ -103,7 +103,7 @@ jobs:
             docker compose -f docker-compose.yml up -d
             docker system prune -f
           # 사용하지 않는 컨테이너, 볼륨, 네트워크 등을 삭제
-    
+
         # Discord 알림 - 배포 성공
       - name: Discord Notification - Success
         if: success()
